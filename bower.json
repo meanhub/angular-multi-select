@@ -1,6 +1,6 @@
 {
     "name"      : "meanhub-angular-multiselect",
-    "version"   : "v4.2.0",
+    "version"   : "v4.3.0",
     "main"      : [
         "isteven-multi-select.js",
         "isteven-multi-select.css"
