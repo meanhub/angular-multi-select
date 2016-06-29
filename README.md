@@ -1,3 +1,7 @@
+NOTE: This is a fork from https://github.com/isteven/angular-multi-select customized for a better styling.
+Credit goes to the original author for the development of the control.
+
+
 # AngularJS MultiSelect
 Pure AngularJS directive which creates a dropdown button with multiple or single selections. 
 Doesn't require jQuery and works well with other Javascript libraries. 
