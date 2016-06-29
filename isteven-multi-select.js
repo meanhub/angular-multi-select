@@ -4,7 +4,7 @@
  *
  * Project started on: Tue, 14 Jan 2014 - 5:18:02 PM
  * Current version: 4.0.0
- * 
+ *
  * Released under the MIT License
  * --------------------------------------------------------------------------------
  * The MIT License (MIT)
@@ -58,7 +58,10 @@ angular.module( 'isteven-multi-select', ['ng'] ).directive( 'istevenMultiSelect'
             onSelectNone    : '&',  
 
             // i18n
-            translation     : '='   
+            translation     : '=',
+
+            // caption
+            caption         : '@'
         },
         
         /* 
@@ -73,7 +76,7 @@ angular.module( 'isteven-multi-select', ['ng'] ).directive( 'istevenMultiSelect'
         link: function ( $scope, element, attrs ) {                       
 
             $scope.backUp           = [];
-            $scope.varButtonLabel   = '';               
+            $scope.varButtonLabel   = '';
             $scope.spacingProperty  = '';
             $scope.indexProperty    = '';                        
             $scope.orientationH     = false;
@@ -447,7 +450,7 @@ angular.module( 'isteven-multi-select', ['ng'] ).directive( 'istevenMultiSelect'
                 }                                    
                 
                 $scope.refreshOutputModel();
-                $scope.refreshButton();                              
+                $scope.refreshButton();
 
                 // We update the index here
                 prevTabIndex = $scope.tabIndex;
@@ -513,47 +516,7 @@ angular.module( 'isteven-multi-select', ['ng'] ).directive( 'istevenMultiSelect'
 
             // refresh button label
             $scope.refreshButton = function() {
-
-                $scope.varButtonLabel   = '';                
-                var ctr                 = 0;                  
-
-                // refresh button label...
-                if ( $scope.outputModel.length === 0 ) {
-                    // https://github.com/isteven/angular-multi-select/pull/19                    
-                    $scope.varButtonLabel = $scope.lang.nothingSelected;
-                }
-                else {                
-                    var tempMaxLabels = $scope.outputModel.length;
-                    if ( typeof attrs.maxLabels !== 'undefined' && attrs.maxLabels !== '' ) {
-                        tempMaxLabels = attrs.maxLabels;
-                    }
-
-                    // if max amount of labels displayed..
-                    if ( $scope.outputModel.length > tempMaxLabels ) {
-                        $scope.more = true;
-                    }
-                    else {
-                        $scope.more = false;
-                    }                
-                    
-                    angular.forEach( $scope.inputModel, function( value, key ) {
-                        if ( typeof value !== 'undefined' && value[ attrs.tickProperty ] === true ) {                        
-                            if ( ctr < tempMaxLabels ) {                            
-                                $scope.varButtonLabel += ( $scope.varButtonLabel.length > 0 ? '</div>, <div class="buttonLabel">' : '<div class="buttonLabel">') + $scope.writeLabel( value, 'buttonLabel' );
-                            }
-                            ctr++;
-                        }
-                    });                
-
-                    if ( $scope.more === true ) {
-                        // https://github.com/isteven/angular-multi-select/pull/16
-                        if (tempMaxLabels > 0) {
-                            $scope.varButtonLabel += ', ... ';
-                        }
-                        $scope.varButtonLabel += '(' + $scope.outputModel.length + ')';                        
-                    }
-                }
-                $scope.varButtonLabel = $sce.trustAsHtml( $scope.varButtonLabel + '<span class="caret"></span>' );                
+                $scope.varButtonLabel = $sce.trustAsHtml(($scope.caption || '' ) + '<span class="caret"></span>' );
             }
 
             // Check if a checkbox is disabled or enabled. It will check the granular control (disableProperty) and global control (isDisabled)
@@ -725,8 +688,8 @@ angular.module( 'isteven-multi-select', ['ng'] ).directive( 'istevenMultiSelect'
                             }
                         });                            
                         $scope.refreshOutputModel();                                    
-                        $scope.refreshButton();                                                  
-                        $scope.onSelectAll();                                                
+                        $scope.refreshButton();
+                        $scope.onSelectAll();
                         break;
                     case 'NONE':
                         angular.forEach( $scope.filteredModel, function( value, key ) {
@@ -737,8 +700,8 @@ angular.module( 'isteven-multi-select', ['ng'] ).directive( 'istevenMultiSelect'
                             }
                         });               
                         $scope.refreshOutputModel();                                    
-                        $scope.refreshButton();                                                                          
-                        $scope.onSelectNone();                        
+                        $scope.refreshButton();
+                        $scope.onSelectNone();
                         break;
                     case 'RESET':            
                         angular.forEach( $scope.filteredModel, function( value, key ) {                            
@@ -748,8 +711,8 @@ angular.module( 'isteven-multi-select', ['ng'] ).directive( 'istevenMultiSelect'
                             }
                         });               
                         $scope.refreshOutputModel();                                    
-                        $scope.refreshButton();                                                                          
-                        $scope.onReset();                        
+                        $scope.refreshButton();
+                        $scope.onReset();
                         break;
                     case 'CLEAR':
                         $scope.tabIndex = $scope.tabIndex + 1;
@@ -954,14 +917,12 @@ angular.module( 'isteven-multi-select', ['ng'] ).directive( 'istevenMultiSelect'
                 $scope.lang.selectNone      = $sce.trustAsHtml( $scope.icon.selectNone + '&nbsp;&nbsp;' + $scope.translation.selectNone );
                 $scope.lang.reset           = $sce.trustAsHtml( $scope.icon.reset      + '&nbsp;&nbsp;' + $scope.translation.reset );
                 $scope.lang.search          = $scope.translation.search;                
-                $scope.lang.nothingSelected = $sce.trustAsHtml( $scope.translation.nothingSelected );                
             }
             else {
                 $scope.lang.selectAll       = $sce.trustAsHtml( $scope.icon.selectAll  + '&nbsp;&nbsp;Select All' );                
                 $scope.lang.selectNone      = $sce.trustAsHtml( $scope.icon.selectNone + '&nbsp;&nbsp;Select None' );
                 $scope.lang.reset           = $sce.trustAsHtml( $scope.icon.reset      + '&nbsp;&nbsp;Reset' );
                 $scope.lang.search          = 'Search...';
-                $scope.lang.nothingSelected = 'None Selected';                
             }
             $scope.icon.tickMark = $sce.trustAsHtml( $scope.icon.tickMark );
                 
@@ -984,7 +945,7 @@ angular.module( 'isteven-multi-select', ['ng'] ).directive( 'istevenMultiSelect'
             $scope.$watch( 'inputModel' , function( newVal ) {                                 
                 if ( newVal ) {                            
                     $scope.refreshOutputModel();                                    
-                    $scope.refreshButton();                                                  
+                    $scope.refreshButton();
                 }
             }, true );
             
@@ -997,7 +958,7 @@ angular.module( 'isteven-multi-select', ['ng'] ).directive( 'istevenMultiSelect'
                     $scope.prepareGrouping();
                     $scope.prepareIndex();                                                              
                     $scope.refreshOutputModel();                
-                    $scope.refreshButton();                                                                                                                 
+                    $scope.refreshButton();
                 }
             });                        
 
